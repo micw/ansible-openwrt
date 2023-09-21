@@ -156,6 +156,8 @@ $ export ANSIBLE_VARS_PLUGINS=~/.ansible/roles/gekmihesg.openwrt/vars_plugins
 $ ansible -i openwrt-hosts -m setup all
 ```
 
+More examples can be found in [examples.md](examples.md).
+
 License
 -------
 
