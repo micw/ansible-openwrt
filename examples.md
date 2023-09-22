@@ -13,13 +13,23 @@
       key: wireless.default_radio1
 ```
 
-## UCI: Configuring radio0 with 2 SSIDs
+## UCI: Configuring wifi 2g with 2 SSIDs
 
 ```yaml
+
+  - name: Find wifi radio devices
+    set_fact:
+      wifi_2g_radio: "{% for k,v in openwrt_wireless.items() %}{%if v.config.band=='2g' %}{{k}}{%endif%}{%endfor%}"
+      wifi_5g_radio: "{% for k,v in openwrt_wireless.items() %}{%if v.config.band=='5g' %}{{k}}{%endif%}{%endfor%}"
+
+  - fail:
+      msg: "Radio for wifi 2g not found"
+    when: wifi_2g_radio == ""
+
   - name: Setup wifi 2G
     uci:
       command: set
-      key: wireless.radio0
+      key: "wireless.{{ wifi_2g_radio }}"
       value:
         htmode: HT40
         channel: 11
@@ -31,7 +41,7 @@
       key: wireless.lan_2g
       type: wifi-iface
       value:
-        device: radio0
+        device: "{{ wifi_2g_radio }}"
         mode: ap
         ssid: privateapn
         encryption: psk2
@@ -44,7 +54,7 @@
       key: wireless.guest_2g
       type: wifi-iface
       value:
-        device: radio0
+        device: "{{ wifi_2g_radio }}"
         mode: ap
         ssid: guestapn
         encryption: psk2
